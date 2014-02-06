@@ -50,73 +50,13 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     if (ioctl(file,I2C_SLAVE,addr) < 0)
     {
-        qDebug()<<"Failed to acquire bus access and/or talk to UNO.";
+        qDebug()<<"Failed to acquire bus access and/or talk to Mega.";
         /* ERROR HANDLING; you can check errno to see what went wrong */
         a1->stop=false;
         //exit(1);
     }
     else
         qDebug()<<("Successfully connected to UNO!");
-
-    if (ioctl(file,I2C_SLAVE,addr_droplet_generator) < 0)
-    {
-        qDebug()<<"Failed to acquire bus access and/or talk to droplet generator.";
-        /* ERROR HANDLING; you can check errno to see what went wrong */
-        a1->stop=false;
-        //exit(1);
-    }
-    else
-        qDebug()<<("Successfully connected to droplet generator!");
-
-    if (ioctl(file,I2C_SLAVE,addr_droplet_separator) < 0)
-    {
-        qDebug()<<"Failed to acquire bus access and/or talk to droplet separator.";
-        /* ERROR HANDLING; you can check errno to see what went wrong */
-        a1->stop=false;
-        //exit(1);
-    }
-    else
-        qDebug()<<("Successfully connected to droplet separator!");
-
-    if (ioctl(file,I2C_SLAVE,addr_led_pmt) < 0)
-    {
-        qDebug()<<"Failed to acquire bus access and/or talk to LED PMT.";
-        /* ERROR HANDLING; you can check errno to see what went wrong */
-        a1->stop=false;
-        //exit(1);
-    }
-    else
-        qDebug()<<("Successfully connected to LED PMT!");
-
-    if (ioctl(file,I2C_SLAVE,addr_peristaltic) < 0)
-    {
-        qDebug()<<"Failed to acquire bus access and/or talk to Peristaltic pump.";
-        /* ERROR HANDLING; you can check errno to see what went wrong */
-        a1->stop=false;
-        //exit(1);
-    }
-    else
-        qDebug()<<("Successfully connected to Peristaltic pump!");
-
-    if (ioctl(file,I2C_SLAVE,addr_sample_injector) < 0)
-    {
-        qDebug()<<"Failed to acquire bus access and/or talk to Sample Injector pump.";
-        /* ERROR HANDLING; you can check errno to see what went wrong */
-        a1->stop=false;
-        //exit(1);
-    }
-    else
-        qDebug()<<("Successfully connected to Sample Injector pump!");
-
-    if (ioctl(file,I2C_SLAVE,addr_thermocycler) < 0)
-    {
-        qDebug()<<"Failed to acquire bus access and/or talk to Thermocycler.";
-        /* ERROR HANDLING; you can check errno to see what went wrong */
-        a1->stop=false;
-        //exit(1);
-    }
-    else
-        qDebug()<<("Successfully connected to Thermocycler !");
 
 ui->rem_vol_1->setToolTip("Remaining Volume in Pump 1");
 ui->rem_vol_2->setToolTip("Remaining Volume in Pump 2");
