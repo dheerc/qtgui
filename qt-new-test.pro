@@ -40,3 +40,5 @@ HEADERS  += mainwindow.h \
     led_pmt.h
 
 FORMS    += mainwindow.ui
+
+OTHER_FILES +=

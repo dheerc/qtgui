@@ -5,6 +5,11 @@
 #include "common.h"
 #include "arduino.h"
 #include "peristaltic.h"
+#include "droplet_generator.h"
+#include "droplet_separator.h"
+#include "sample_injector.h"
+#include "thermocycler.h"
+#include "led_pmt.h"
 #include <QtCore>
 #include <QtGui>
 
@@ -31,6 +36,9 @@ private slots:
     void on_pushButton_2_clicked();
 
     void on_start_stop_1_clicked(bool checked);
+
+    void on_set_1_clicked();
+
 
 private:
     Ui::MainWindow *ui;

@@ -10,8 +10,10 @@ int addr_droplet_separator=0x09;
 int addr_thermocycler=0x0A;
 int file=0;
 
-char buf[5]={0};
-
+char size=1;
+char buf[20]={0};
+char buf1[80]={0};
+QString add;
 char filename[40];
 
 int i=0;
@@ -118,15 +120,15 @@ MainWindow::MainWindow(QWidget *parent) :
     else
         qDebug()<<("Successfully connected to Thermocycler !");
 
-ui->rem_vol_1->setToolTip("Remaining Volume in Pump 1");
-ui->rem_vol_2->setToolTip("Remaining Volume in Pump 2");
-ui->rem_vol_3->setToolTip("Remaining Volume in Pump 3");
-ui->rem_vol_4->setToolTip("Remaining Volume in Pump 4");
+    ui->rem_vol_1->setToolTip("Remaining Volume in Pump 1");
+    ui->rem_vol_2->setToolTip("Remaining Volume in Pump 2");
+    ui->rem_vol_3->setToolTip("Remaining Volume in Pump 3");
+    ui->rem_vol_4->setToolTip("Remaining Volume in Pump 4");
 
-ui->start_stop_1->setToolTip("Start/Stop Pump 1");
-ui->start_stop_2->setToolTip("Start/Stop Pump 2");
-ui->start_stop_3->setToolTip("Start/Stop Pump 3");
-ui->start_stop_4->setToolTip("Start/Stop Pump 4");
+    ui->start_stop_1->setToolTip("Start/Stop Pump 1");
+    ui->start_stop_2->setToolTip("Start/Stop Pump 2");
+    ui->start_stop_3->setToolTip("Start/Stop Pump 3");
+    ui->start_stop_4->setToolTip("Start/Stop Pump 4");
 
 
 }
@@ -134,6 +136,39 @@ ui->start_stop_4->setToolTip("Start/Stop Pump 4");
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+
+void send_data()
+{
+    size=strlen(buf);
+    char *temp={0};
+    for(i=0;i<size;i++)
+    {
+        temp=&buf[i];
+        if(write(file,temp,1)==1)
+        {
+            qDebug()<<"Value sent: "<<*temp;
+        }
+        else
+            qDebug()<<"Value not sent: "<<*temp;
+        usleep(70000);
+    }
+
+    if(read(file,buf1,80))
+    {
+        //ui->get_value->setText(buf);
+        i=0;
+        while(buf1[i]!='\n')
+        {
+            add.append(buf1[i]);
+
+            i++;
+        }
+        i=0;
+        qDebug()<<"Value received: "<<add;
+
+    }
 }
 
 //void MainWindow::on_start_stop_clicked(bool checked)
@@ -250,6 +285,7 @@ MainWindow::~MainWindow()
 //        a1->stop=false;
 //        //exit(1);
 //    }
+//    for(i=0;i<size;i++){
 //    else
 //        qDebug()<<("Successfully connected to UNO!");
 
@@ -260,7 +296,6 @@ MainWindow::~MainWindow()
 //    char *temp=NULL;
 //    //char size=sizeof(ui->set_value->text().toLatin1().data());
 //    //char *buf[sizeof(ui->set_value->text().toLatin1().data())]={ui->set_value->text().toLatin1().data()};
-//    for(i=0;i<size;i++){
 //        temp=&buf[i];
 //        if(write(file,temp,1)==1)
 //        {
@@ -334,42 +369,8 @@ void MainWindow::on_start_stop_1_clicked(bool checked)
         }
         else
             qDebug()<<("Successfully connected to UNO!");
-        char size=1;
-        char buf[20];
         strcpy(buf,"STARTP");
-        size=strlen(buf);
-        char *temp={0};
-        //char size=sizeof(ui->set_value->text().toLatin1().data());
-        //char *buf[sizeof(ui->set_value->text().toLatin1().data())]={ui->set_value->text().toLatin1().data()};
-        for(i=0;i<size;i++)
-        {
-            temp=&buf[i];
-            if(write(file,temp,1)==1)
-            {
-                qDebug()<<"Value sent: "<<*temp;
-            }
-            else
-                qDebug()<<"Value not sent: "<<*temp;
-            usleep(70000);
-        }
-        char buf1[80]={0};
-        QString add;
-        if(read(file,buf1,80))
-        {
-            //ui->get_value->setText(buf);
-            i=0;
-            while(buf1[i]!='\n')
-            {
-                add.append(buf1[i]);
-
-                i++;
-            }
-            i=0;
-            qDebug()<<"Value received: "<<add;
-
-        }
-
-        //        usleep(70000);
+        send_data();
     }
     else
     {
@@ -385,39 +386,40 @@ void MainWindow::on_start_stop_1_clicked(bool checked)
         }
         else
             qDebug()<<("Successfully connected to UNO!");
-        char size=1;
-        char buf[20];
         strcpy(buf,"STOPPP");
-        size=strlen(buf);
-        char *temp={0};
-        //char size=sizeof(ui->set_value->text().toLatin1().data());
-        //char *buf[sizeof(ui->set_value->text().toLatin1().data())]={ui->set_value->text().toLatin1().data()};
-        for(i=0;i<size;i++){
-            temp=&buf[i];
-            if(write(file,temp,1)==1)
-            {
-                qDebug()<<"Value sent: "<<*temp;
-            }
-            else
-                qDebug()<<"Value not sent: "<<*temp;
-            usleep(70000);
-        }
-        char buf1[80]={0};
-        QString add;
-        if(read(file,buf1,80))
-        {
-            //ui->get_value->setText(buf);
-            i=0;
-            while(buf1[i]!='\n')
-            {
-                add.append(buf1[i]);
-
-                i++;
-            }
-            i=0;
-            qDebug()<<"Value received: "<<add;
-
-        }
+        send_data();
     }
-    //        usleep(70000);
 }
+
+void MainWindow::on_set_1_clicked()
+{
+    if (ioctl(file,I2C_SLAVE,addr) < 0)
+    {
+        qDebug()<<"Failed to acquire bus access and/or talk to Mega.";
+        /* ERROR HANDLING; you can check errno to see what went wrong */
+        a1->stop=false;
+        //exit(1);
+    }
+    else
+        qDebug()<<("Successfully connected to UNO!");
+
+    strcpy(buf,"FLWRTE");
+    send_data();
+    if(strcmp(add.toStdString().c_str(),"OK")==0)
+    {
+        strcpy(buf,ui->flow_rate_1->text().toStdString().c_str());
+        send_data();
+    }
+    if(strcmp(add.toStdString().c_str(),"OK")==0)
+    {
+        strcpy(buf,"VOLDIS");
+        send_data();
+    }
+    if(strcmp(add.toStdString().c_str(),"OK")==0)
+    {
+        strcpy(buf,ui->vol_to_dispense_1->text().toStdString().c_str());
+        send_data();
+    }
+
+}
+

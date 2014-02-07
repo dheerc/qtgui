@@ -18,7 +18,6 @@ extern int addr_sample_injector;
 extern int addr_droplet_generator;
 extern int addr_droplet_separator;
 extern int addr_thermocycler;
-extern char buf[5];
 extern QMutex mutex;
 
 #endif // COMMON_H
